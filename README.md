@@ -14,8 +14,8 @@ This script includes:
 - Copy the current user's language & culture related settings to default user account (for new user accounts) and system account (for welcome screen).
 
 
-## ⚖ License
+## License
 
-Copyright (c) 2021-present Takeshi Katano. All rights reserved. This software is released under the [MIT License](https://github.com/tksh164/windows-language-change-script/blob/master/LICENSE).
+Copyright (c) 2021-present Takeshi Katano. All rights reserved. This software is released under the [MIT License](https://github.com/tksh164/windows-language-culture-change-script/blob/master/LICENSE).
 
 Disclaimer: The codes stored herein are my own personal codes and do not related my employer's any way.
