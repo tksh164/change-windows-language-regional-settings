@@ -71,13 +71,13 @@ function Copy-LanguageSttingsToDefaultAndSystemAccount
 $langPackFilePath = Join-Path -Path $env:TEMP -ChildPath 'Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab'
 Get-JapaneseLangPackCabFile -DestinationFilePath $langPackFilePath
 
-# Add the language pack.
+# Install the language pack.
 Add-WindowsPackage -Online -NoRestart -PackagePath $langPackFilePath
 
 # Delete the lang pack CAB file.
 Remove-Item -LiteralPath $langPackFilePath -Force
 
-# Add the Japanese language related capabilities.
+# Install the Japanese language related capabilities.
 Add-WindowsCapability -Online -Name 'Language.Basic~~~ja-JP~0.0.1.0'
 Add-WindowsCapability -Online -Name 'Language.Fonts.Jpan~~~und-JPAN~0.0.1.0'
 Add-WindowsCapability -Online -Name 'Language.Handwriting~~~ja-JP~0.0.1.0'
