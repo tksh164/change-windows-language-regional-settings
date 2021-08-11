@@ -1,4 +1,4 @@
-# Windows language & culture related settings change script
+# Change the Windows language & regional settings
 
 This script includes:
 
