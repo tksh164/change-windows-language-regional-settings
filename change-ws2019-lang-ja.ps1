@@ -90,6 +90,9 @@ $langList = Get-WinUserLanguageList
 $langList.Insert(0, 'ja')
 Set-WinUserLanguageList -LanguageList $langList -Force
 
+# Set the culture for the current user account.
+Set-Culture -CultureInfo ja-JP
+
 # Enable the dynamically setting the culture based on the Windows display language for the current user.
 # This setting doesn't need change because the default value is the same.
 #Set-WinCultureFromLanguageListOptOut -OptOut $false
