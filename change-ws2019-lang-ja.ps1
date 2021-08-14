@@ -113,7 +113,7 @@ Set-WinUserLanguageList -LanguageList $langList -Force
 #      https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
 Set-WinHomeLocation -GeoId 0x7a  # Japan
 
-# Set the time zone to the Tokyo Standard Time.
+# Set the time zone for the current computer.
 Set-TimeZone -Id 'Tokyo Standard Time'
 
 # Set the system locale for the current computer.
