@@ -123,7 +123,7 @@ function Set-LanguageOptions
     Remove-Item -LiteralPath $xmlFileFilePath -Force
 }
 
-# Download the lang pack CAB file for Japanese.
+# Download the language pack CAB file for Japanese.
 $langPackFilePath = Join-Path -Path $env:TEMP -ChildPath 'Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab'
 $params = @{
     OffsetToCabFileInIsoFile = 0x3BD26800
@@ -136,7 +136,7 @@ Invoke-LanguagePackCabFileDownload @params -Verbose
 # Install the language pack.
 Add-WindowsPackage -Online -NoRestart -PackagePath $langPackFilePath -Verbose
 
-# Delete the lang pack CAB file.
+# Delete the language pack CAB file.
 Remove-Item -LiteralPath $langPackFilePath -Force -Verbose
 
 # Install the Japanese language related capabilities.
