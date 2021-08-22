@@ -131,24 +131,24 @@ $params = @{
     CabFileHash              = 'B562ECD51AFD32DB6E07CB9089691168C354A646'
     DestinationFilePath      = $langPackFilePath
 }
-Invoke-LanguagePackCabFileDownload @params
+Invoke-LanguagePackCabFileDownload @params -Verbose
 
 # Install the language pack.
-Add-WindowsPackage -Online -NoRestart -PackagePath $langPackFilePath
+Add-WindowsPackage -Online -NoRestart -PackagePath $langPackFilePath -Verbose
 
 # Delete the lang pack CAB file.
-Remove-Item -LiteralPath $langPackFilePath -Force
+Remove-Item -LiteralPath $langPackFilePath -Force -Verbose
 
 # Install the Japanese language related capabilities.
-Add-WindowsCapability -Online -Name 'Language.Basic~~~ja-JP~0.0.1.0'
-Add-WindowsCapability -Online -Name 'Language.Fonts.Jpan~~~und-JPAN~0.0.1.0'
-Add-WindowsCapability -Online -Name 'Language.Handwriting~~~ja-JP~0.0.1.0'
-Add-WindowsCapability -Online -Name 'Language.OCR~~~ja-JP~0.0.1.0'
-Add-WindowsCapability -Online -Name 'Language.Speech~~~ja-JP~0.0.1.0'
-Add-WindowsCapability -Online -Name 'Language.TextToSpeech~~~ja-JP~0.0.1.0'
+Add-WindowsCapability -Online -Name 'Language.Basic~~~ja-JP~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.Fonts.Jpan~~~und-JPAN~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.Handwriting~~~ja-JP~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.OCR~~~ja-JP~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.Speech~~~ja-JP~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.TextToSpeech~~~ja-JP~0.0.1.0' -Verbose
 
 # Set the time zone for the current computer.
-Set-TimeZone -Id 'Tokyo Standard Time'
+Set-TimeZone -Id 'Tokyo Standard Time' -Verbose
 
 # Restart the system to take effect the language pack installation.
 Restart-Computer
