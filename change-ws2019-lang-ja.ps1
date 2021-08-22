@@ -123,7 +123,6 @@ function Set-LanguageOptions
     Remove-Item -LiteralPath $xmlFileFilePath -Force
 }
 
-
 # Download the lang pack CAB file for Japanese.
 $langPackFilePath = Join-Path -Path $env:TEMP -ChildPath 'Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab'
 $params = @{
@@ -148,48 +147,11 @@ Add-WindowsCapability -Online -Name 'Language.OCR~~~ja-JP~0.0.1.0'
 Add-WindowsCapability -Online -Name 'Language.Speech~~~ja-JP~0.0.1.0'
 Add-WindowsCapability -Online -Name 'Language.TextToSpeech~~~ja-JP~0.0.1.0'
 
-# Set the preferred language for the current user account.
-$langList = Get-WinUserLanguageList
-$langList.Insert(0, 'ja')
-Set-WinUserLanguageList -LanguageList $langList -Force
-
-# Set the culture for the current user account.
-Set-Culture -CultureInfo ja-JP
-
-# Enable the dynamically setting the culture based on the Windows display language for the current user.
-# This setting doesn't need change because the default value is the same.
-#Set-WinCultureFromLanguageListOptOut -OptOut $false
-
-# Set the language bar type and mode for the current user account.
-# This setting doesn't need change because the default value is the same.
-#Set-WinLanguageBarOption -UseLegacySwitchMode:$false -UseLegacyLanguageBar:$false
-
-# Override the default input method to 'ja-JP: Microsoft IME' for the current user account.
-# This setting doesn't need change because the default value is the same.
-# Ref: Default Input Profiles (Input Locales) in Windows
-#      https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
-#Set-WinDefaultInputMethodOverride -InputTip '0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}'
-
-# Use the HTTP Accept Language list based on the language list for the current user account.
-# This setting doesn't need change because the default value is the same.
-#Set-WinAcceptLanguageFromLanguageListOptOut -OptOut $false
-
-# Set the home location for the current user account.
-# Ref: Table of Geographical Locations
-#      https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
-Set-WinHomeLocation -GeoId 0x7a  # Japan
-
 # Set the time zone for the current computer.
 Set-TimeZone -Id 'Tokyo Standard Time'
 
-# Set the system locale for the current computer.
-Set-WinSystemLocale -SystemLocale ja-JP
-
-# The language pack installation and system locale change needs the restart for take effect.
+# Restart the system to take effect the language pack installation.
 Restart-Computer
-
-# Override the Windows UI language for the current user account.
-Set-WinUILanguageOverride -Language ja-JP
 
 # Set the current user's language options and copy it to the default user account and system account. Also, set the system locale.
 #
