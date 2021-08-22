@@ -1,21 +1,30 @@
-function Get-JapaneseLangPackCabFile
+function Invoke-LanguagePackCabFileDownload
 {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
+        [long] $OffsetToCabFileInIsoFile,
+
+        [Parameter(Mandatory = $true)]
+        [long] $CabFileSize,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $CabFileHash,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $DestinationFilePath
     )
 
     # Ref: Cannot configure a language pack for Windows Server 2019 Desktop Experience
     #      https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience
-    $LANG_PACK_ISO_URI = 'https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso'  # WS2019
-    $request = [System.Net.HttpWebRequest]::Create($LANG_PACK_ISO_URI)
+    $langPackIsoUri = 'https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso'  # WS2019
+    $request = [System.Net.HttpWebRequest]::Create($langPackIsoUri)
     $request.Method = 'GET'
 
-    # Set the Japanese language pack CAB file data range.
-    $OFFSET_TO_JP_LANG_CAB_FILE_IN_ISO_FILE = 1003644928
-    $JP_LANG_CAB_FILE_SIZE = 62015873
-    $request.AddRange('bytes', $OFFSET_TO_JP_LANG_CAB_FILE_IN_ISO_FILE, $OFFSET_TO_JP_LANG_CAB_FILE_IN_ISO_FILE + $JP_LANG_CAB_FILE_SIZE - 1)
+    # Set the language pack CAB file data range.
+    $request.AddRange('bytes', $OffsetToCabFileInIsoFile, $OffsetToCabFileInIsoFile + $CabFileSize - 1)
 
     # Donwload the lang pack CAB file.
     $response = $request.GetResponse()
@@ -29,10 +38,9 @@ function Get-JapaneseLangPackCabFile
     $fileStream.Dispose()
 
     # Verify integrity to the downloaded lang pack CAB file.
-    $JP_LANG_CAB_FILE_HASH = 'B562ECD51AFD32DB6E07CB9089691168C354A646'
     $fileHash = Get-FileHash -Algorithm SHA1 -LiteralPath $DestinationFilePath
-    if ($fileHash.Hash -ne $JP_LANG_CAB_FILE_HASH) {
-        throw ('"{0}" is corrupted. The download was may failed.') -f $DestinationFilePath
+    if ($fileHash.Hash -ne $CabFileHash) {
+        throw ('The file hash of the language pack CAB file "{0}" is not match to expected value. The download was may failed.') -f $DestinationFilePath
     }
 }
 
@@ -67,9 +75,15 @@ function Copy-LanguageSttingsToDefaultAndSystemAccount
 }
 
 
-# Download the lang pack CAB file.
+# Download the lang pack CAB file for Japanese.
 $langPackFilePath = Join-Path -Path $env:TEMP -ChildPath 'Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab'
-Get-JapaneseLangPackCabFile -DestinationFilePath $langPackFilePath
+$params = @{
+    OffsetToCabFileInIsoFile = 0x3BD26800
+    CabFileSize              = 62015873
+    CabFileHash              = 'B562ECD51AFD32DB6E07CB9089691168C354A646'
+    DestinationFilePath      = $langPackFilePath
+}
+Invoke-LanguagePackCabFileDownload @params
 
 # Install the language pack.
 Add-WindowsPackage -Online -NoRestart -PackagePath $langPackFilePath
