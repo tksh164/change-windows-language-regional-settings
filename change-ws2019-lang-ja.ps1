@@ -44,26 +44,75 @@ function Invoke-LanguagePackCabFileDownload
     }
 }
 
-function Copy-LanguageSttingsToDefaultAndSystemAccount
+function Set-LanguageOptions
 {
     [CmdletBinding()]
-    param ()
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $UserLocale,
 
-    # Ref: How to Automate Regional and Language settings in Windows Vista, Windows Server 2008, Windows 7 and in Windows Server 2008 R2
-    #      https://docs.microsoft.com/en-us/troubleshoot/windows-client/deployment/automate-regional-language-settings
-    $XML_FILE_CONTENT = @'
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $InputLanguageID,
+
+        [Parameter(Mandatory = $true)]
+        [int] $LocationGeoId,
+
+        [Parameter(Mandatory = $true)]
+        [bool] $CopySettingsToSystemAccount,
+
+        [Parameter(Mandatory = $true)]
+        [bool] $CopySettingsToDefaultUserAccount,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $SystemLocale
+    )
+
+    # Reference:
+    # How to Automate Regional and Language settings in Windows Vista, Windows Server 2008, Windows 7 and in Windows Server 2008 R2
+    # https://docs.microsoft.com/en-us/troubleshoot/windows-client/deployment/automate-regional-language-settings
+    $xmlFileContentTemplate = @'
 <gs:GlobalizationServices xmlns:gs="urn:longhornGlobalizationUnattend">
     <gs:UserList>
-        <gs:User UserID="Current" CopySettingsToDefaultUserAcct="true" CopySettingsToSystemAcct="true"/> 
+        <gs:User UserID="Current" CopySettingsToSystemAcct="{0}" CopySettingsToDefaultUserAcct="{1}"/>
     </gs:UserList>
+    <gs:UserLocale>
+        <gs:Locale Name="{2}" SetAsCurrent="true"/>
+    </gs:UserLocale>
+    <gs:InputPreferences>
+        <gs:InputLanguageID Action="add" ID="{3}" Default="true"/>
+    </gs:InputPreferences>
+    <gs:MUILanguagePreferences>
+        <gs:MUILanguage Value="{2}"/>
+        <gs:MUIFallback Value="en-US"/>
+    </gs:MUILanguagePreferences>
+    <gs:LocationPreferences>
+        <gs:GeoID Value="{4}"/>
+    </gs:LocationPreferences>
+    <gs:SystemLocale Name="{5}"/>
 </gs:GlobalizationServices>
 '@
 
-    # Create a XML file.
-    $xmlFileFilePath = Join-Path -Path $env:TEMP -ChildPath ((New-Guid).Guid + '.xml')
-    Set-Content -LiteralPath $xmlFileFilePath -Encoding UTF8 -Value $XML_FILE_CONTENT
+    # Create the XML file content.
+    $fillValues = @(
+        $CopySettingsToSystemAccount.ToString().ToLowerInvariant(),
+        $CopySettingsToDefaultUserAccount.ToString().ToLowerInvariant(),
+        $UserLocale,
+        $InputLanguageID,
+        $LocationGeoId,
+        $SystemLocale
+    )
+    $xmlFileContent = $xmlFileContentTemplate -f $fillValues
 
-    # Copy the current user language settings to default user account and system user account.
+    Write-Verbose -Message ('MUI XML: {0}' -f $xmlFileContent)
+
+    # Create a new XML file and set the content.
+    $xmlFileFilePath = Join-Path -Path $env:TEMP -ChildPath ((New-Guid).Guid + '.xml')
+    Set-Content -LiteralPath $xmlFileFilePath -Encoding UTF8 -Value $xmlFileContent
+
+    # Copy the current user language settings to the default user account and system user account.
     $procStartInfo = New-Object -TypeName 'System.Diagnostics.ProcessStartInfo' -ArgumentList 'C:\Windows\System32\control.exe', ('intl.cpl,,/f:"{0}"' -f $xmlFileFilePath)
     $procStartInfo.UseShellExecute = $false
     $procStartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Minimized
@@ -142,8 +191,21 @@ Restart-Computer
 # Override the Windows UI language for the current user account.
 Set-WinUILanguageOverride -Language ja-JP
 
-# Copy the current user language settings to default user account and system user account.
-Copy-LanguageSttingsToDefaultAndSystemAccount
+# Set the current user's language options and copy it to the default user account and system account. Also, set the system locale.
+#
+# Ref: Default Input Profiles (Input Locales) in Windows
+#      https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
+# Ref: Table of Geographical Locations
+#      https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
+$params = @{
+    UserLocale                       = 'ja-JP'
+    InputLanguageID                  = '0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}'
+    LocationGeoId                    = 122  # Japan
+    CopySettingsToSystemAccount      = $true
+    CopySettingsToDefaultUserAccount = $true
+    SystemLocale                     = 'ja-JP'
+}
+Set-LanguageOptions @params -Verbose
 
 # The Windows UI language change needs the restart for take effect.
 Restart-Computer
