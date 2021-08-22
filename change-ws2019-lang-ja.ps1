@@ -142,10 +142,10 @@ Remove-Item -LiteralPath $langPackFilePath -Force -Verbose
 # Install the Japanese language related capabilities.
 Add-WindowsCapability -Online -Name 'Language.Basic~~~ja-JP~0.0.1.0' -Verbose
 Add-WindowsCapability -Online -Name 'Language.Fonts.Jpan~~~und-JPAN~0.0.1.0' -Verbose
-Add-WindowsCapability -Online -Name 'Language.Handwriting~~~ja-JP~0.0.1.0' -Verbose
 Add-WindowsCapability -Online -Name 'Language.OCR~~~ja-JP~0.0.1.0' -Verbose
-Add-WindowsCapability -Online -Name 'Language.Speech~~~ja-JP~0.0.1.0' -Verbose
-Add-WindowsCapability -Online -Name 'Language.TextToSpeech~~~ja-JP~0.0.1.0' -Verbose
+Add-WindowsCapability -Online -Name 'Language.Handwriting~~~ja-JP~0.0.1.0' -Verbose   # Optional
+Add-WindowsCapability -Online -Name 'Language.Speech~~~ja-JP~0.0.1.0' -Verbose        # Optional
+Add-WindowsCapability -Online -Name 'Language.TextToSpeech~~~ja-JP~0.0.1.0' -Verbose  # Optional
 
 # Set the time zone for the current computer.
 Set-TimeZone -Id 'Tokyo Standard Time' -Verbose
