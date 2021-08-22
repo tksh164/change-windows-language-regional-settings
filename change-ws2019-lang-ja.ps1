@@ -17,8 +17,9 @@ function Invoke-LanguagePackCabFileDownload
         [string] $DestinationFilePath
     )
 
-    # Ref: Cannot configure a language pack for Windows Server 2019 Desktop Experience
-    #      https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience
+    # Reference:
+    # - Cannot configure a language pack for Windows Server 2019 Desktop Experience
+    #   https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience
     $langPackIsoUri = 'https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso'  # WS2019
     $request = [System.Net.HttpWebRequest]::Create($langPackIsoUri)
     $request.Method = 'GET'
@@ -71,8 +72,8 @@ function Set-LanguageOptions
     )
 
     # Reference:
-    # How to Automate Regional and Language settings in Windows Vista, Windows Server 2008, Windows 7 and in Windows Server 2008 R2
-    # https://docs.microsoft.com/en-us/troubleshoot/windows-client/deployment/automate-regional-language-settings
+    # - Guide to Windows Vista Multilingual User Interface
+    #   https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-vista/cc721887(v=ws.10)
     $xmlFileContentTemplate = @'
 <gs:GlobalizationServices xmlns:gs="urn:longhornGlobalizationUnattend">
     <gs:UserList>
@@ -155,10 +156,11 @@ Restart-Computer
 
 # Set the current user's language options and copy it to the default user account and system account. Also, set the system locale.
 #
-# Ref: Default Input Profiles (Input Locales) in Windows
-#      https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
-# Ref: Table of Geographical Locations
-#      https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
+# References:
+# - Default Input Profiles (Input Locales) in Windows
+#   https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
+# - Table of Geographical Locations
+#   https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
 $params = @{
     UserLocale                       = 'ja-JP'
     InputLanguageID                  = '0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}'
