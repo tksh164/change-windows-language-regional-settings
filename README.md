@@ -19,7 +19,7 @@ Phase 2:
 
 - Language pack download
 
-    You can get the Windows Server 2019 Language Pack ISO file from the link in [Cannot configure a language pack for Windows Server 2019 Desktop Experience](https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience). The script uses this link URI. The ISO file contains all language pack CAB files.
+    You can get the Windows Server 2019 Language Pack ISO file from the link in [Cannot configure a language pack for Windows Server 2019 Desktop Experience](https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience). The script uses the link URI. The ISO file contains all language pack CAB files.
 
     > 1. Download an ISO image that contains the language packs **here**.
 
