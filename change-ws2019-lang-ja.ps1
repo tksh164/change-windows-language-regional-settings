@@ -207,5 +207,5 @@ $params = @{
 }
 Set-LanguageOptions @params -Verbose
 
-# The Windows UI language change needs the restart for take effect.
+# Restart the system to take effect changes.
 Restart-Computer
