@@ -1,6 +1,6 @@
 # Change the Windows language & regional settings
 
-You need run the script line by line because the script has two phases that include the system reboot.
+You need run the script line by line because the script has two phases that include the system reboots.
 
 Phase 1:
 
@@ -55,6 +55,11 @@ Phase 2:
         + CategoryInfo          : NotSpecified: (:) [Add-WindowsCapability], COMException
         + FullyQualifiedErrorId : Microsoft.Dism.Commands.AddWindowsCapabilityCommand
     ```
+
+## Related repo
+
+- [Change the Windows language options and regional settings using the DSC extension](https://github.com/tksh164/azure-demo-scripts-templates/tree/master/arm-templates/win-lang-region-config)
+    - The DSC extension implementation of the script for Azure VMs.
 
 ## License
 
