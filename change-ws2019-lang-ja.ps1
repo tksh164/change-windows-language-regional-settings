@@ -3,6 +3,10 @@ function Invoke-LanguagePackCabFileDownload
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $LangPackIsoUri,
+
+        [Parameter(Mandatory = $true)]
         [long] $OffsetToCabFileInIsoFile,
 
         [Parameter(Mandatory = $true)]
@@ -17,28 +21,24 @@ function Invoke-LanguagePackCabFileDownload
         [string] $DestinationFilePath
     )
 
-    # Reference:
-    # - Cannot configure a language pack for Windows Server 2019 Desktop Experience
-    #   https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience
-    $langPackIsoUri = 'https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso'  # WS2019
-    $request = [System.Net.HttpWebRequest]::Create($langPackIsoUri)
+    $request = [System.Net.HttpWebRequest]::Create($LangPackIsoUri)
     $request.Method = 'GET'
 
     # Set the language pack CAB file data range.
     $request.AddRange('bytes', $OffsetToCabFileInIsoFile, $OffsetToCabFileInIsoFile + $CabFileSize - 1)
 
-    # Donwload the lang pack CAB file.
+    # Donwload the language pack CAB file.
     $response = $request.GetResponse()
     $reader = New-Object -TypeName 'System.IO.BinaryReader' -ArgumentList $response.GetResponseStream()
-    $contents = $reader.ReadBytes($response.ContentLength)
-    $reader.Dispose()
-
-    # Save the lang pack CAB file.
     $fileStream = [System.IO.File]::Create($DestinationFilePath)
+    $contents = $reader.ReadBytes($response.ContentLength)
     $fileStream.Write($contents, 0, $contents.Length)
     $fileStream.Dispose()
+    $reader.Dispose()
+    $response.Close()
+    $response.Dispose()
 
-    # Verify integrity to the downloaded lang pack CAB file.
+    # Verify integrity of the downloaded language pack CAB file.
     $fileHash = Get-FileHash -Algorithm SHA1 -LiteralPath $DestinationFilePath
     if ($fileHash.Hash -ne $CabFileHash) {
         throw ('The file hash of the language pack CAB file "{0}" is not match to expected value. The download was may failed.') -f $DestinationFilePath
@@ -119,15 +119,21 @@ function Set-LanguageOptions
     $procStartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Minimized
     $proc = [System.Diagnostics.Process]::Start($procStartInfo)
     $proc.WaitForExit()
+    $proc.Dispose()
 
     # Delete the XML file.
     Remove-Item -LiteralPath $xmlFileFilePath -Force
 }
 
 # Download the language pack CAB file for Japanese.
+#
+# Reference:
+# - Cannot configure a language pack for Windows Server 2019 Desktop Experience
+#   https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience
 $langPackFilePath = Join-Path -Path $env:TEMP -ChildPath 'Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab'
 $params = @{
-    OffsetToCabFileInIsoFile = 0x3BD26800
+    LangPackIsoUri           = 'https://software-static.download.prss.microsoft.com/pr/download/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso'
+    OffsetToCabFileInIsoFile = 0x3BD26800L
     CabFileSize              = 62015873
     CabFileHash              = 'B562ECD51AFD32DB6E07CB9089691168C354A646'
     DestinationFilePath      = $langPackFilePath
