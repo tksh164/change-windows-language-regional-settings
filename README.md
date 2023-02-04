@@ -47,7 +47,7 @@ Phase 2:
 
 - Cultures
 
-    You can get all cultures by the following PowerShell code.
+    You can get all cultures by the following PowerShell code. It's use for `UserLocale` and `SystemLocale`.
 
     ```powershell
     [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures).Name
