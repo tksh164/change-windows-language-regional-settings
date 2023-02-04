@@ -1,5 +1,7 @@
 # Change the Windows language & regional settings
 
+This scripts demonstrate that change the Windows language options and region settings.
+
 You need run the script line by line because the script has two phases that include the system reboots.
 
 Phase 1:
@@ -19,9 +21,17 @@ Phase 2:
 
 - Language pack download
 
-    You can get the Windows Server 2019 Language Pack ISO file from the link in [Cannot configure a language pack for Windows Server 2019 Desktop Experience](https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience). The script uses the link URI. The ISO file contains all language pack CAB files.
+    - Windows Server 2022
 
-    > 1. Download an ISO image that contains the language packs **here**.
+        You can get the Windows Server 2022 Language Pack ISO file from the link in [Windows Server 2022 - Evaluation Center](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022). The script uses the link URI. The ISO file contains all language pack CAB files.
+
+        > Download this **ISO**.
+
+    - Windows Server 2019
+
+        You can get the Windows Server 2019 Language Pack ISO file from the link in [Cannot configure a language pack for Windows Server 2019 Desktop Experience](https://docs.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/cannot-configure-language-pack-windows-server-desktop-experience). The script uses the link URI. The ISO file contains all language pack CAB files.
+
+        > 1. Download an ISO image that contains the language packs **here**.
 
 - Language options configuration
 
@@ -39,8 +49,16 @@ Phase 2:
 
     You can get all cultures by the following PowerShell code.
 
-    ```PowerShell
+    ```powershell
     [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures).Name
+    ```
+
+- Time zones
+
+    You can get all available time zones by the following PowerShell code.
+
+    ```powershell
+    Get-TimeZone -ListAvailable
     ```
 
 ## Notes
